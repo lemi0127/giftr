@@ -20,10 +20,10 @@ doubleTap.recognizeWith(singleTap);
 document.addEventListener("DOMContentLoaded", function(){
 
         checkDB();
-        updateListPeople();
-        updateListOcc();
-        updateListGiftsPeople();
-        updateListGiftsOcc():
+        showListPeople();
+        showListOcc();
+        showListGiftsPeople();
+        showListGiftsOcc():
         
 });
 
@@ -45,9 +45,6 @@ function checkDB(){
                 var insertMom = "INSERT INTO people(person_name) VALUES ('Mom')";
                 var insertNanny = "INSERT INTO people(person_name) VALUES ('Nanny')";
                 var insertAnne = "INSERT INTO people(person_name) VALUES ('Anne')";
-                
-        // Fetch the list of gifts and occasions for a specific person
-                var fetchList = 'SELECT g.purchased, g.gift_id, g.idea, o.occ_name FROM gifts AS g INNER JOIN occasions AS o ON o.occ_id = g.occ_id WHERE g.person_id = ? ORDER BY o.occ_name, g.idea';
                              
             
         trans.executeSql(createPeople, [], 
@@ -153,91 +150,87 @@ function addItem(){
         cancelModalOverlay();
 };
 
-    function addPerson(){
-        
-        db.transaction(function(trans){
-                       
-                       trans.executeSql('INSERT INTO people(person_name) VALUES (?)', [textCatch],
-                                        function(tx, rs){
-                                        //do something if it works
-                                        console.info("Person Added");
-                                        //update the list view
-                                        showPplList();
-                                        },
-                                        function(tx, err){
-                                        //failed to run query
-                                        console.info( err.message);
-                                        });
-                       
-                       });
-        
-    };
+function addPerson(){
     
-    function addOccasion(){
+  var item = document.getElementById("new-per-occ").value;
         
-        db.transaction(function(trans){
+   db.transaction(function(trans){
                        
-                       trans.executeSql('INSERT INTO occasions(occ_name) VALUES (?)', [textCatch],
-                                        function(tx, rs){
-                                        //do something if it works
-                                        console.info("Occasion Added");
-                                        //update the list view
-                                        showOccList();
-                                        },
-                                        function(tx, err){
-                                        //failed to run query
-                                        console.info( err.message);
-                                        });
+      trans.executeSql('INSERT INTO people(person_name) VALUES (?)', [item],
+           function(tx, rs){
+           console.info("Person Added");
+           showPeopleList();
+           },
+           function(tx, err){
+           console.info(err.message);
+           });
                        
-                       });
+      });
         
-    };
+};
     
-    function addGiftPerson(){
+function addOcc(){
+   
+  var item = document.getElementById("new-per-occ").value;
         
-        console.log(liCatch);
-        
-        
-        db.transaction(function(trans){
+    db.transaction(function(trans){
                        
-                       trans.executeSql('INSERT INTO gifts(person_id, occ_id, gift_idea) VALUES (?, ?, ?)', [liCatch, optCatch, textCatch],
-                                        function(tx, rs){
-                                        //do something if it works
-                                        console.info("Gift for person Added");
-                                        //reshow the list
-                                        showPersonGifts();
-                                        
-                                        },
-                                        function(tx, err){
-                                        //failed to run query
-                                        console.info( err.message);
-                                        });
+       trans.executeSql('INSERT INTO occasions(occ_name) VALUES (?)', [item],
+            function(tx, rs){
+            console.info("Occasion Added");
+            showOccList();
+            },
+            function(tx, err){
+            console.info(err.message);
+            });
                        
-                       });
+      });
         
-    };
+};
     
-    function addGiftOccasion(){
+function addGiftPerson(){
+    
+    var target = ev.targetid;
+    var idea = document.getElementById("new-idea").value;
+    var item = document.getElementById("list-per-occ").value;
+    
+        db.transaction(function(trans){
+                       
+            trans.executeSql('INSERT INTO gifts(person_id, occ_id, gift_idea) VALUES (?, ?, ?)', [target, idea, item],
+                 function(tx, rs){
+                 console.info("Gift for person Added");
+                 showPersonGifts();
+                 },
+                 function(tx, err){
+                 console.info(err.message);
+                 });
+                       
+         });
         
-        console.log(optCatch, liCatch, textCatch);
+};
+    
+function addGiftOcc(){
+    
+  var target = ev.target.id;
+  var idea = document.getElementById("new-idea").value;
+  var item = document.getElementById("list-per-occ").value;
+    
+    console.log(idea, target, item);
         
         db.transaction(function(trans){
                        
-                       trans.executeSql('INSERT INTO gifts(person_id, occ_id, gift_idea) VALUES (?, ?, ?)', [optCatch, liCatch, textCatch],
-                                        function(tx, rs){
-                                        //do something if it works
-                                        console.info("Gift for occasion Added");
-                                        //reshow the list
-                                        showOccGifts();
-                                        },
-                                        function(tx, err){
-                                        //failed to run query
-                                        console.info( err.message);
-                                        });
+           trans.executeSql('INSERT INTO gifts(person_id, occ_id, gift_idea) VALUES (?, ?, ?)', [target, idea, item],
+                 function(tx, rs){
+                 console.info("Gift for occasion Added");
+                 showOccGifts();
+                 },
+                 function(tx, err){
+                 console.info(err.message);
+                 });
                        
-                       });
+        });
         
-    };
+};
     
 function removePerson(ev){
    var item = ev.target.getAttribute("data-person");
@@ -247,13 +240,13 @@ function removePerson(ev){
                      //do something if it works, as desired
                      },
                      function(tx, err){
-                     //failed to run query
+                     console.info(err.message);
                      });
            item.addEventListener('doubletap', removePerson, false);
            item.parentNode.removeChild(item);
 },
                            
-function removeOccasion(ev){
+function removeOcc(ev){
     var item = ev.target.getAttribute("data-occ");
     app.db.transaction(function(trans){
            trans.executeSql('DELETE FROM occasions WHERE occ_id =?',[item]
@@ -261,7 +254,7 @@ function removeOccasion(ev){
                       //do something if it works, as desired
                       },
                       function(tx, err){
-                      //failed to run query
+                      console.info(err.message);
                       });
            item.addEventListener('doubletap', removePerson, false);
            item.parentNode.removeChild(item);
@@ -276,7 +269,7 @@ function removeGiftPerson(ev){
                       //do something if it works, as desired
                       },
                       function(tx, err){
-                      //failed to run query
+                      console.info(err.message);
                       });
             item.addEventListener('doubletap', removeGiftPerson, false);
 },
@@ -290,12 +283,12 @@ function removeGiftOcc(ev){
                       //do something if it works, as desired
                       },
                       function(tx, err){
-                      //failed to run query
+                      console.info(err.message);
                       });
            item.addEventListener('doubletap', removeGiftOcc, false);
 },
 
-function updateListPeople(){
+function showListPeople(){
   var list = document.getElementById("listview-people");
   list.innerHTML = "";
 
@@ -313,11 +306,11 @@ function updateListPeople(){
        // output("displayed the current contents of the stuff table")
     	}, 
       function(tx, err){
-     // 	output("transaction to list contents of stuff failed")
-    });
+      console.info(err.message);
+       });
 });
 
-function updateListOcc(){
+function showListOcc(){
     var list = document.getElementById("listview-occ");
     list.innerHTML = "";
         
@@ -332,14 +325,14 @@ function updateListOcc(){
             li.setAttribute("data-occ", rs.rows.item(i).occ_id);
             list.appendChild(li);
             }
-            //    output("displayed the current contents of the stuff table")
+            // output("displayed the current contents of the stuff table")
             },
         function(tx, err){
-           // 	output("transaction to list contents of stuff failed")
+           console.info(err.message);
             });
 });
         
-function updateListGiftsPeople(){
+function showListGiftsPeople(){
     var list = document.getElementById("listview-gifts-people");
     list.innerHTML = "";
             
@@ -354,19 +347,19 @@ function updateListGiftsPeople(){
                     li.setAttribute("data-gifts-people", rs.rows.item(i).gift_id);
                     list.appendChild(li);
                     }
-                    //  output("displayed the current contents of the stuff table")
+                    // output("displayed the current contents of the stuff table")
                     },
                     function(tx, err){
-                    // 	output("transaction to list contents of stuff failed")
+                    console.info(err.message);
                     });
 });
 
-function updateListGiftsOcc(){
+function showListGiftsOcc(){
     var list = document.getElementById("listview-gifts-occ");
     list.innerHTML = "";
         
     app.db.transaction(function(trans){
-        trans.executeSql("SELECT * FROM people, occasions, gifts", [],
+        trans.executeSql("SELECT g.purchased, g.gift_id, g.idea, o.occ_name FROM gifts AS g INNER JOIN occasions AS o ON o.occ_id = g.occ_id WHERE g.person_id = ? ORDER BY o.occ_name, g.idea", [],
             function(tx, rs){
                                             
                 var numStuff = rs.rows.length;
@@ -376,10 +369,10 @@ function updateListGiftsOcc(){
                 li.setAttribute("data-gifts-occ", rs.rows.item(i).gift_id);
                 list.appendChild(li);
                 }
-            //    output("displayed the current contents of the stuff table")
+                // output("displayed the current contents of the stuff table")
                 },
-            function(tx, err){
-            // 	output("transaction to list contents of stuff failed")
+                function(tx, err){
+                console.info(err.message);
                 });
 });
                        
