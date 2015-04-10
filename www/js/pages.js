@@ -1,8 +1,6 @@
-///Implicate swipe for navigation
-
-var pages = [];
-var numLinks = 0;
-var numPages = 0;
+var pages = [],
+numLinks = 0,
+numPages = 0;
 
 var wrapper = document.getElementById('wrapper');
 var mc = new Hammer(wrapper);
@@ -26,7 +24,7 @@ function swipePage(url){
             peopleList.className = 'active';
             occList.className = '';
         }
-},
+};
 
                           
 function handleNav(ev){
@@ -35,11 +33,11 @@ function handleNav(ev){
     var parts = href.split("#");
     swipePage( parts[1] );
     return false;
-},
+};
           
 function handlePageShow(ev){
     ev.target.className = "active";
-},
+};
 
 function addDispatch(num){
   pages[num].dispatchEvent(pageshow);

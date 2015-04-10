@@ -1,9 +1,9 @@
 var app = {
     db:null,
-    version:'1.0';
+    version:'1.0',
     initialize: function() {
         this.bindEvents();
-    },
+},
     
 wrapper: document.querySelector('.wrapper'),
 mc: null,
@@ -16,6 +16,7 @@ var doubleTap = new Hammer.Tap({event: 'doubletap', taps: 2 });
 
 mc.add([doubleTap, singleTap]);
 doubleTap.recognizeWith(singleTap);
+},
     
 document.addEventListener("DOMContentLoaded", function(){
 
@@ -23,13 +24,14 @@ document.addEventListener("DOMContentLoaded", function(){
         showListPeople();
         showListOcc();
         showListGiftsPeople();
-        showListGiftsOcc():
+        showListGiftsOcc();
         
-});
-
+}),
     
 function checkDB(){
 		app.db = openDatabase('Giftr', '', 'Sample DB', 1024*1024);
+    
+        if(db.version == ''){
     
         app.db.changeVersion('', app.version,
                              
@@ -77,8 +79,8 @@ function checkDB(){
                         },
             function(tx, err){
               output( err.message);
-                      });
-                     },
+                           });
+
         trans.executeSql(insertMom, [],
             function(tx, rs){
                 output("Added row in people");
@@ -86,7 +88,6 @@ function checkDB(){
             function(tx, err){
                 output( err.message);
                             });
-                             },
                              
         trans.executeSql(insertNanny, [],
             function(tx, rs){
@@ -95,7 +96,6 @@ function checkDB(){
             function(tx, err){
                 output( err.message);
                             });
-                             },
                              
         trans.executeSql(insertAnne, [],
             function(tx, rs){
@@ -104,21 +104,19 @@ function checkDB(){
             function(tx, err){
                 output( err.message);
                             });
-                             },
-                             
-                             
-        function(err){
-                             
-                output( "Change version call error " + err.message);
-                        },
-                             
-        function(){
-  
-          		output("Change version function worked.")
-                        });
     
-}},
-    
+         function(err){                  
+            output("Change version call error" + err.message);
+                  },
+                             
+              }else{
+                     
+                         showPeopleList();
+                         showOccList();
+                             
+                    }
+            
+}; 
     
 var target = ev.target.parentElement.id;
     
@@ -148,7 +146,7 @@ function addItem(){
         }
         
         cancelModalOverlay();
-};
+},
 
 function addPerson(){
     
@@ -167,7 +165,7 @@ function addPerson(){
                        
       });
         
-};
+},
     
 function addOcc(){
    
@@ -186,7 +184,7 @@ function addOcc(){
                        
       });
         
-};
+},
     
 function addGiftPerson(){
     
@@ -207,7 +205,7 @@ function addGiftPerson(){
                        
          });
         
-};
+},
     
 function addGiftOcc(){
     
@@ -230,7 +228,7 @@ function addGiftOcc(){
                        
         });
         
-};
+},
     
 function removePerson(ev){
    var item = ev.target.getAttribute("data-person");
@@ -259,8 +257,7 @@ function removeOcc(ev){
            item.addEventListener('doubletap', removePerson, false);
            item.parentNode.removeChild(item);
 },
-                                              
-                                              
+                       
 function removeGiftPerson(ev){
     var item = ev.target.getAttribute("data-gifts-people");
     app.db.transaction(function(trans){
@@ -273,8 +270,7 @@ function removeGiftPerson(ev){
                       });
             item.addEventListener('doubletap', removeGiftPerson, false);
 },
-                                              
-                                              
+                       
 function removeGiftOcc(ev){
     var item = ev.target.getAttribute("data-gifts-occ");
     app.db.transaction(function(trans){
@@ -308,7 +304,7 @@ function showListPeople(){
       function(tx, err){
       console.info(err.message);
        });
-});
+}),
 
 function showListOcc(){
     var list = document.getElementById("listview-occ");
@@ -330,7 +326,7 @@ function showListOcc(){
         function(tx, err){
            console.info(err.message);
             });
-});
+}),
         
 function showListGiftsPeople(){
     var list = document.getElementById("listview-gifts-people");
@@ -352,7 +348,7 @@ function showListGiftsPeople(){
                     function(tx, err){
                     console.info(err.message);
                     });
-});
+}),
 
 function showListGiftsOcc(){
     var list = document.getElementById("listview-gifts-occ");
@@ -374,7 +370,7 @@ function showListGiftsOcc(){
                 function(tx, err){
                 console.info(err.message);
                 });
-});
+}),
                        
 function cancelGifts(ev){
 
@@ -394,7 +390,7 @@ function cancelGifts(ev){
           giftListO.className = '';
           giftListP.className = '';
                        
-};
+},
                    
 var btnAdd = document.getElementsByClassName("btnAdd");
     for (a=0;a<btnAdd.length;a++){
