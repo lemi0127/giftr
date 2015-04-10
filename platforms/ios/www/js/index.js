@@ -1,6 +1,5 @@
 var app = {
     db:null,
-    version:'1.0',
     initialize: function() {
         this.bindEvents();
 },
