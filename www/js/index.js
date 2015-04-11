@@ -1,4 +1,23 @@
 var app = {
+    var app= {
+    loadRequirements:0,
+    init: function(){
+        document.addEventListener("deviceready", app.onDeviceReady);
+        document.addEventListener("DOMContentLoaded", app.onDomReady);
+    },
+    onDeviceReady: function(){
+        app.loadRequirements++;
+        if(app.loadRequirements === 2){
+            app.start();
+        }
+    },
+    onDomReady: function(){
+        app.loadRequirements++;
+        if(app.loadRequirements === 2){
+            app.start();
+        }
+    },
+
     db:null,
     initialize: function() {
         this.bindEvents();
@@ -442,4 +461,4 @@ cancelModalOverlay: function () {
     }
 };
 
-app.initialize();
+app.init();
